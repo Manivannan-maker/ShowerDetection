@@ -1,4 +1,5 @@
 # AntiMould Shower Sentinel
+![Heading](/ImageData/image1.jpg)
 
 **Smart device detects shower sound and warns via Home Assistant when the extractor fan is off, preventing steam build-up and stopping mould growth.**
 
