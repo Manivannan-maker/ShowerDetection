@@ -354,6 +354,8 @@ The project can be extended toward **full autonomy** by adding **Home Assistant 
 25 projects • 136 followers on Hackster.io
 🔗 https://www.hackster.io/manivannan
 
+Linkedin : https://www.linkedin.com/in/manivannan-s-588543bb
+
 ---
 
 *Source project page: [AntiMould Shower Sentinel on Hackster.io](https://www.hackster.io/manivannan/antimould-shower-sentinel-9b0d87) — Published June 25, 2026, licensed under CC BY-NC-ND.*
