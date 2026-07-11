@@ -70,7 +70,7 @@ UK homes are typically **well-insulated with limited passive airflow**, so this 
 ---
 
 ## Solution
-
+![Heading](/ImageData/image2.jpg)
 When a user begins showering, the **Edge Impulse machine-learning model running on the Arduino UNO Q** identifies the acoustic signature of the shower. Once shower activity is confirmed, the system checks whether the **extractor fan is running** and continues monitoring for the next **20 minutes** to ensure proper post-shower ventilation.
 
 If the fan is **not detected** during or after the shower, the Arduino UNO Q sends a signal to **Home Assistant**, running locally on a **Raspberry Pi 5**, which then triggers a mobile notification reminding the user to switch the fan on.
@@ -90,7 +90,7 @@ The system also handles the reverse scenario: if the user **forgets to turn the 
 ## Step 1: Set Up Home Assistant on the Raspberry Pi 5
 
 In this setup, the **Raspberry Pi 5 acts as the Home Assistant server**, while the **Arduino UNO Q functions as the client** running the ML model. The Arduino UNO Q detects both shower and extractor-fan sounds and sends events to Home Assistant, which triggers mobile notifications.
-
+![Heading](/ImageData/image3.jpg)
 ### Prerequisites
 - **128 GB SD Card** — Class 10 or better recommended
 - **Raspberry Pi 5** — board and case (optional but recommended)
@@ -134,6 +134,8 @@ With Home Assistant configured and connected to Wi-Fi, the next step is enabling
 After login, the device is registered automatically and appears under:
 **Settings → Devices & Services → Devices**
 
+![Heading](/ImageData/image4.jpg)
+
 ### Enable Notifications
 - **In the app:** go to **App Configuration → Notifications** and enable them.
 - **On your phone:** allow notifications for the Home Assistant app in system settings.
@@ -158,6 +160,7 @@ This token securely links the Arduino UNO Q with Home Assistant and the mobile d
 ---
 
 ## Python Code to Run on the Arduino UNO Q
+![Heading](/ImageData/image5.jpg)
 
 Before running Python on the Arduino UNO Q, complete the board setup steps described here:
 
@@ -191,6 +194,8 @@ print("Status:", response.status_code)
 print("Response:", response.text)
 ```
 
+![Heading](/ImageData/image6.jpg)
+
 Running this script produced a live notification on the author's iPhone, sent directly from the Arduino UNO Q — confirming the end-to-end communication path before building the ML model.
 
 ---
@@ -206,12 +211,16 @@ The workflow uses a structured Edge Impulse pipeline. Audio samples are labelled
 3. `Shower-Off-Extractor-Fan-Off`
 4. `Shower-Off-Extractor-Fan-On`
 
+
 ### Device Connection
 
 Connect the Arduino UNO Q board to your Edge Impulse account:
 👉 https://docs.edgeimpulse.com/hardware/boards/arduino-uno-q
 
 > **Note:** The Arduino UNO Q has no built-in microphone, so a **USB Type-C microphone** was connected via a **USB hub** to provide audio input.
+
+![Heading](/ImageData/image7.jpg)
+
 
 After installing the firmware, start the daemon:
 
@@ -228,13 +237,19 @@ Once connected, navigate to the **Data Acquisition** section and record audio sa
 1. In **Create Impulse**, set the preprocessing block to **MFE** (Mel Filterbank Energy) and the learning block to **Classification**.
 2. Generate features and visualize them to get a high-level overview of each label.
 
+ ![Heading](/ImageData/image8.jpg)
+
 ### Neural Network Settings
 
 - **Training cycles:** 100
 - **Learning rate:** 0.005
 - **Architecture:** Reshape layer (converts audio to a 1D array) → 1D Convolution layer → Dropout layer (for improved accuracy/generalization)
 
+ ![Heading](/ImageData/image9.jpg)
+
 **Result:** The model achieved **100% accuracy** during training.
+
+ ![Heading](/ImageData/image10.jpg)
 
 ### Model Testing
 
@@ -286,6 +301,7 @@ python3 classify_EI.py modelfile.eim
 ### Audio Classification Pipeline
 
 The system continuously receives audio data, buffers it, and passes it into the customized **`classify_EI.py`** script. The embedded **EIM model** generates a classification result for each audio window.
+ ![Heading](/ImageData/image11.jpg)
 
 A **classification label counter** inside `classify_EI.py` tracks how many consecutive times each label appears:
 
@@ -293,14 +309,14 @@ A **classification label counter** inside `classify_EI.py` tracks how many conse
 - When the label is `Shower-Off-Extractor-Fan-On` **or** `Shower-ON-Extractor-Fan-On`, and the count exceeds **`DETECTION_COUNT_FAN_ON`** (1 minute) → the system concludes the **fan is active** and starts a second timer to check whether the fan is still active after **20 minutes** (configurable).
 
 ### Shower Active Timer Callback
-
+ ![Heading](/ImageData/image12.jpg)
 - When the **shower-active timer** expires, the system checks whether the label count for `Shower-Off-Extractor-Fan-On` is **zero**.
 - If zero → the extractor fan is **not running** while the shower is active.
 - The system **sends a notification to Home Assistant**, prompting activation of the extractor fan for **15–20 minutes**.
 - Home Assistant relays this to the user's smartwatch or preferred device.
 
 ### Fan Active Timer Callback
-
+ ![Heading](/ImageData/image13.jpg)
 - When the **fan-active timer** expires, the system checks whether the label count for `Shower-Off-Extractor-Fan-On` is **greater than 7** (configurable threshold).
 - If true → the fan has run long enough to reduce humidity.
 - The system **sends a notification to Home Assistant** instructing it to switch off the fan.
@@ -309,7 +325,7 @@ A **classification label counter** inside `classify_EI.py` tracks how many conse
 ---
 
 ## Hardware Setup
-
+ ![Heading](/ImageData/image14.jpg)
 In this prototype, a **weather-resistant enclosure** houses the Arduino UNO Q, which is powered by a **portable power bank**. For long-term deployment, a dedicated **wired 5V power connection** should replace the portable power source.
 
 ---
